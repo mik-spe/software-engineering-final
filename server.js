@@ -10,3 +10,8 @@ http.createServer(function (req, res)
     return res.end();
   });
 }).listen(8080);
+
+function rollDice() 
+{
+    document.getElementById("dice").value = Math.floor(Math.random()*6) + 1;
+}

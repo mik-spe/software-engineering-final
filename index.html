@@ -6,6 +6,8 @@
 
 <link rel="stylesheet" href="game.css">
 
+<script src="server.js"></script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
 <style>
@@ -249,6 +251,20 @@ function accelerate(n)
     <br><br>
     How far can you make it before you hit an icicle?
 </p>
+
+<p>
+    Click on the button to roll the six-sided dice.
+</p>
+
+<!-- Create a button that allows the user to hit "enter" to reroll -->
+<button type="button" autofocus onclick="rollDice()">Roll Dice</button>
+
+<br><br>
+
+<!-- Display the result of the dice roll -->
+Result: <input id="dice" type="text" value="" size="5" disabled>
+
+<br><br>
 
 <button onclick="restart()">Restart</button>
 
