@@ -69,10 +69,12 @@ var myGameArea =
         window.addEventListener('keydown', function (e) 
         {
             myGameArea.key = e.keyCode;
+            e.preventDefault();
         })
         window.addEventListener('keyup', function (e) 
         {
             myGameArea.key = false;
+            e.preventDefault();
         })
     },
     clear : function() 
