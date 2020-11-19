@@ -34,6 +34,8 @@ canvas
 
 <body onload="startGame()">
 
+<img src="winterBackground.png" style="display:none;" alt="" />
+
 <h1>Snowy Sweep</h1>
 
 <h2>by Mikala Spencer</h2>
@@ -281,19 +283,7 @@ function accelerate(n)
     How far can you make it before you hit an icicle?
 </p>
 
-<p>
-    Click on the button to roll the six-sided dice.
-</p>
-
-<!-- Create a button that allows the user to hit "enter" to reroll -->
-<button1 type="button" autofocus onclick="rollDice()">Roll Dice</button1>
-
-<br><br>
-
-<!-- Display the result of the dice roll -->
-Result: <input id="dice" type="text" value="" size="5" disabled>
-
-<br><br>
+<br>
 
 <button2 onclick="restart()">Restart</button2>
 
