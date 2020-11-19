@@ -11,19 +11,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
 <style>
-div
+#borderDIV
 {
-	width:1260px;
-  	height:50px;
- 	background-color:#feebfe;
- 	animation-name:example;
-  	animation-duration:7s;
-	animation-iteration-count:infinite;
+	width:1250px;
+  	height:400px;
+ 	outline: 10px solid palevioletred;
+ 	animation: outline 5s infinite;
 }
-@keyframes example
+@keyframes outline
 {
-	from{background-color:#feebfe;}
-	to{background-color:powderblue;}
+    50% {outline: 15px solid powderblue}
 }
 
 canvas 
@@ -35,23 +32,31 @@ canvas
 </style>
 </head>
 
+<body onload="startGame()">
+
 <h1>Snowy Sweep</h1>
 
 <h2>by Mikala Spencer</h2>
 
-<body onload="startGame()">
+<br><br>
 
 <script>
 
     var myGamePiece;
+    var myGameTitle;
+    var myBackground;
     var myObstacles = [];
     var myScore;
+    var gamePaused;
 
     function startGame() 
     {
         myGamePiece = new component(50, 50, "mikanHappy.png", 10, 120, "image");
+        myBackground = new component(480, 270, "winterBackground.png", 0, 0, "image");
+        myGameTitle = new component("30px", "Lucida Sans Unicode", "#353b3d", 10, 40, "text");
         myGamePiece.gravity = 0.05;
-        myScore = new component("30px", "Consolas", "black", 280, 40, "text");
+        gamePaused = false;
+        myScore = new component("20px", "Lucida Sans Unicode", "#353b3d", 350, 40, "text");
         myGameArea.start();
     }
 
@@ -66,6 +71,7 @@ var myGameArea =
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.frameNo = 0;
         this.interval = setInterval(updateGameArea, 20);
+
         window.addEventListener('keydown', function (e) 
         {
             myGameArea.key = e.keyCode;
@@ -168,11 +174,26 @@ function restart()
     document.location.href="";
 }
 
+function pause()
+{
+    if (!gamePaused)
+    {
+        myGameArea = clearInterval(myGameArea);
+        gamePaused = true;
+    }
+    else if (gamePaused)
+    {
+        myGameArea = setInterval(updateGameArea, 0);
+        gamePaused = false;
+    }
+}
+
 function updateGameArea() 
 {
     myGamePiece.speedX = 0;
     myGamePiece.speedY = 0; 
     myGamePiece.image.src = "mikanHappy.png";
+    myBackground.image.src = "winterBackground.png";
 
     if (myGameArea.key && myGameArea.key == 37) 
     {
@@ -207,6 +228,9 @@ function updateGameArea()
 
     myGameArea.clear();
 
+    myBackground.newPos();    
+    myBackground.update();
+
     myGameArea.frameNo += 1;
 
     if (myGameArea.frameNo == 1 || everyinterval(150)) 
@@ -216,7 +240,7 @@ function updateGameArea()
         maxHeight = 250;
 
         height = Math.floor(Math.random()*(maxHeight-minHeight+1)+minHeight);
-        myObstacles.push(new component(10, x - height, "#8ba9b0", x, height));
+        myObstacles.push(new component(20, x - height, "grey", x, height));
     }
 
     for (i = 0; i < myObstacles.length; i += 1) 
@@ -226,6 +250,8 @@ function updateGameArea()
     }
     myScore.text="SCORE: " + myGameArea.frameNo;
     myScore.update();
+    myGameTitle.text="Snowy Sweep";
+    myGameTitle.update();
     myGamePiece.newPos();
     myGamePiece.update();
 }
@@ -246,11 +272,12 @@ function accelerate(n)
 }
 </script>
 
+<div id="borderDIV">
+
 <br>
 
 <p>
     Use the arrow keys to navigate the snowy landscape.
-    <br><br>
     How far can you make it before you hit an icicle?
 </p>
 
@@ -259,7 +286,7 @@ function accelerate(n)
 </p>
 
 <!-- Create a button that allows the user to hit "enter" to reroll -->
-<button type="button" autofocus onclick="rollDice()">Roll Dice</button>
+<button1 type="button" autofocus onclick="rollDice()">Roll Dice</button1>
 
 <br><br>
 
@@ -268,8 +295,10 @@ Result: <input id="dice" type="text" value="" size="5" disabled>
 
 <br><br>
 
-<button onclick="restart()">Restart</button>
+<button2 onclick="restart()">Restart</button2>
 
+<button3 onclick="pause()">Pause</button3>
+</div>
 </body>
 
 </html>
