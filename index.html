@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 
+<!-- 
+    SnowySweep 
+    Mikala Spencer 
+    Software Engineering: Final 
+-->
+
 <html lang="en-US">
 
 <head>
@@ -10,7 +16,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
+<!-- Animation border effect & canvas traits-->
 <style>
+
 #borderDIV
 {
 	width:1250px;
@@ -34,12 +42,14 @@ canvas
 
 <body onload="startGame()">
 
+<!-- Declare the images before use to prevent flickering -->
 <img src="winterBackground.png" style="display:none;" alt="" />
-<img src="mikanHappy.png" style="display:none;" alt="" />
-<img src="mikanAngry.png" style="display:none;" alt="" />
-<img src="mikanSad.png" style="display:none;" alt="" />
-<img src="mikanScared.png" style="display:none;" alt="" />
+<img src="avatar_down.png" style="display:none;" alt="" />
+<img src="avatar_up.png" style="display:none;" alt="" />
+<img src="avatar_right.png" style="display:none;" alt="" />
+<img src="avatar_left.png" style="display:none;" alt="" />
 
+<!-- Title for the game/project and creator -->
 <h1>Snowy Sweep</h1>
 
 <h2>by Mikala Spencer</h2>
@@ -54,15 +64,20 @@ canvas
     var myObstacles = [];
     var myScore;
     var gamePaused;
+    var item = [];
+    var xr;
+    var yr;
 
+    // Starting componets on the canvas, images and text
     function startGame() 
     {
-        myGamePiece = new component(50, 50, "mikanHappy.png", 10, 120, "image");
+        myGamePiece = new component(50, 50, "avatar_down.png", 10, 120, "image");
         myBackground = new component(480, 270, "winterBackground.png", 0, 0, "image");
         myGameTitle = new component("30px", "Lucida Sans Unicode", "#353b3d", 10, 40, "text");
         myGamePiece.gravity = 0.05;
         gamePaused = false;
         myScore = new component("20px", "Lucida Sans Unicode", "#353b3d", 350, 40, "text");
+        
         myGameArea.start();
     }
 
@@ -154,6 +169,28 @@ function component(width, height, color, x, y, type)
         }
     }
 
+    this.hitWith = function(otherobj)
+    {
+        var myleft = this.x;
+        var myright = this.x + (this.width);
+        var mytop = this.y;
+        var mybottom = this.y + (this.height);
+        var otherleft = otherobj.x;
+        var otherright = otherobj.x + (otherobj.width);
+        var othertop = otherobj.y;
+        var otherbottom = otherobj.y + (otherobj.height);
+        var hit = true;
+
+        if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) 
+        {
+            hit = false;
+        }
+        else
+        {
+            return hit;
+        }
+    }
+
     this.crashWith = function(otherobj) 
     {
         var myleft = this.x;
@@ -170,8 +207,12 @@ function component(width, height, color, x, y, type)
         {
             crash = false;
         }
-
-        return crash;
+        else
+        {
+            alert("You hit a block. " + myScore.text + ". Select 'Close' to restart.");
+            document.location.reload();
+            return crash;
+        }
     }
 }
 
@@ -189,36 +230,42 @@ function pause()
     }
     else if (gamePaused)
     {
-        myGameArea = setInterval(updateGameArea, 0);
+        myGameArea = everyinterval(20);
         gamePaused = false;
     }
 }
+
+function login()
+{
+
+}
+
 
 function updateGameArea() 
 {
     myGamePiece.speedX = 0;
     myGamePiece.speedY = 0; 
-    myGamePiece.image.src = "mikanHappy.png";
+    myGamePiece.image.src = "avatar_down.png";
     myBackground.image.src = "winterBackground.png";
 
     if (myGameArea.key && myGameArea.key == 37) 
     {
-        myGamePiece.image.src = "mikanSad.png";
+        myGamePiece.image.src = "avatar_left.png";
         myGamePiece.speedX = -5; 
     }
     if (myGameArea.key && myGameArea.key == 39) 
     {
-        myGamePiece.image.src = "mikanScared.png";
+        myGamePiece.image.src = "avatar_right.png";
         myGamePiece.speedX = 5; 
     }
     if (myGameArea.key && myGameArea.key == 38) 
     {
-        myGamePiece.image.src = "mikanAngry.png";
+        myGamePiece.image.src = "avatar_up.png";
         myGamePiece.speedY = -5; 
     }
     if (myGameArea.key && myGameArea.key == 40) 
     {
-        myGamePiece.image.src = "mikanHappy.png";
+        myGamePiece.image.src = "avatar_down.png";
         myGamePiece.speedY = 5; 
     }
 
@@ -230,6 +277,15 @@ function updateGameArea()
         {
             return;
         } 
+    }
+
+    for (i = 0; i < item.length; i += 1)
+    {
+        if (myGamePiece.hitWith(item[i]))
+        {
+            myScore.text="SCORE: " + myGameArea.frameNo + 500;
+            myScore.update();
+        }
     }
 
     myGameArea.clear();
@@ -246,7 +302,17 @@ function updateGameArea()
         maxHeight = 250;
 
         height = Math.floor(Math.random()*(maxHeight-minHeight+1)+minHeight);
-        myObstacles.push(new component(20, x - height, "grey", x, height));
+        xr = Math.floor((Math.random() * 300) + 1);
+        yr = Math.floor((Math.random() * 300) + 1);
+        myObstacles.push(new component(20, x - height, "white", x, height));
+        item.push(new component(20, 20, "snowflake.png", xr+300, yr, "image"));
+    }
+
+    for (i = 0; i < item.length; i += 1)
+    {
+        // Randomly generate items
+        item[i].x += -1;
+        item[i].update();
     }
 
     for (i = 0; i < myObstacles.length; i += 1) 
@@ -254,6 +320,7 @@ function updateGameArea()
         myObstacles[i].x += -1;
         myObstacles[i].update();
     }
+
     myScore.text="SCORE: " + myGameArea.frameNo;
     myScore.update();
     myGameTitle.text="Snowy Sweep";
@@ -289,10 +356,12 @@ function accelerate(n)
 
 <br>
 
-<button2 onclick="restart()">Restart</button2>
+<button class="restart" onclick="restart()">Restart</button>
+<br>
+<button class="pause" onclick="pause()">Pause</button>
+<br>
+<button class="login" onclick="login()">Log-In</button>
 
-<button3 onclick="pause()">Pause</button3>
-</div>
 </body>
 
 </html>

@@ -11,4 +11,5 @@
 
 # References used:
 # w3schools.com "HTML Game" tutorial: https://www.w3schools.com/graphics/game_intro.asp
+# Made charatcer with: http://www.avatarsinpixels.com
 # 
