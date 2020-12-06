@@ -22,7 +22,7 @@
 #borderDIV
 {
 	width:1250px;
-  	height:400px;
+  	height:800px;
  	outline: 10px solid palevioletred;
  	animation: outline 5s infinite;
 }
@@ -48,7 +48,7 @@ canvas
 <img src="avatar_up.png" style="display:none;" alt="" />
 <img src="avatar_right.png" style="display:none;" alt="" />
 <img src="avatar_left.png" style="display:none;" alt="" />
-
+<!-- <img id="snowflake" src="snowflake.png" onload="drawImage()" style="display:none;" alt="" /> -->
 <!-- Title for the game/project and creator -->
 <h1>Snowy Sweep</h1>
 
@@ -67,6 +67,11 @@ canvas
     var item = [];
     var xr;
     var yr;
+    var score = 0;
+    var message;
+    var max;
+    var scoreEnd = 1000;
+    var answer;
 
     // Starting componets on the canvas, images and text
     function startGame() 
@@ -77,7 +82,10 @@ canvas
         myGamePiece.gravity = 0.05;
         gamePaused = false;
         myScore = new component("20px", "Lucida Sans Unicode", "#353b3d", 350, 40, "text");
-        
+    }
+
+    function play()
+    {
         myGameArea.start();
     }
 
@@ -107,6 +115,10 @@ var myGameArea =
     clear : function() 
     {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    },
+    stop : function() 
+    {
+        clearInterval(this.interval);
     }
 }
 
@@ -119,7 +131,6 @@ function component(width, height, color, x, y, type)
         this.image.arc = color;
     }
 
-    this.score = 0;
     this.width = width;
     this.height = height;
     this.speedX = 0;
@@ -180,14 +191,20 @@ function component(width, height, color, x, y, type)
         var othertop = otherobj.y;
         var otherbottom = otherobj.y + (otherobj.height);
         var hit = true;
+        var center = ((mytop + mybottom) / 2);
+        var othercenter = ((othertop + otherbottom) / 2);
 
         if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) 
         {
             hit = false;
         }
-        else
+        if (center = othercenter)
         {
             return hit;
+        }
+        else
+        {
+            hit = false;
         }
     }
 
@@ -216,6 +233,18 @@ function component(width, height, color, x, y, type)
     }
 }
 
+function getRandomInt(max) 
+{
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
+var sampleMessages = ["First message", "Second message", "Third"];
+for (i = 0; i < myGameArea.frameNo; i++)
+{
+    everyinterval(1000)
+    console.log(sampleMessages.shift());
+}
+
 function restart()
 {
     document.location.href="";
@@ -235,28 +264,30 @@ function pause()
     }
 }
 
-function login()
-{
-
-}
-
-
 function updateGameArea() 
 {
     myGamePiece.speedX = 0;
     myGamePiece.speedY = 0; 
     myGamePiece.image.src = "avatar_down.png";
     myBackground.image.src = "winterBackground.png";
+    //item.image.src = "snowflake.png";
 
     if (myGameArea.key && myGameArea.key == 37) 
     {
         myGamePiece.image.src = "avatar_left.png";
-        myGamePiece.speedX = -5; 
+        myGamePiece.speedX = -3; 
     }
     if (myGameArea.key && myGameArea.key == 39) 
     {
         myGamePiece.image.src = "avatar_right.png";
-        myGamePiece.speedX = 5; 
+        myGamePiece.speedX = 3; 
+        score++;
+        if (score == scoreEnd)
+        {
+            myGameArea.stop();
+            alert("Congrats! You have reached your end at " + scoreEnd + " points.");
+            document.location.reload();
+        }
     }
     if (myGameArea.key && myGameArea.key == 38) 
     {
@@ -266,7 +297,7 @@ function updateGameArea()
     if (myGameArea.key && myGameArea.key == 40) 
     {
         myGamePiece.image.src = "avatar_down.png";
-        myGamePiece.speedY = 5; 
+        myGamePiece.speedY = 3; 
     }
 
     var x, height, gap, minHeight, maxHeight;
@@ -275,20 +306,14 @@ function updateGameArea()
     {
         if (myGamePiece.crashWith(myObstacles[i])) 
         {
-            return;
+            myGameArea.stop();
         } 
     }
 
-    for (i = 0; i < item.length; i += 1)
-    {
-        if (myGamePiece.hitWith(item[i]))
-        {
-            myScore.text="SCORE: " + myGameArea.frameNo + 500;
-            myScore.update();
-        }
-    }
-
     myGameArea.clear();
+
+    myGamePiece.newPos(); 
+    myGamePiece.update();
 
     myBackground.newPos();    
     myBackground.update();
@@ -305,7 +330,7 @@ function updateGameArea()
         xr = Math.floor((Math.random() * 300) + 1);
         yr = Math.floor((Math.random() * 300) + 1);
         myObstacles.push(new component(20, x - height, "white", x, height));
-        item.push(new component(20, 20, "snowflake.png", xr+300, yr, "image"));
+        item.push(new component(10, 10, "grey", xr+300, yr));
     }
 
     for (i = 0; i < item.length; i += 1)
@@ -313,6 +338,13 @@ function updateGameArea()
         // Randomly generate items
         item[i].x += -1;
         item[i].update();
+
+        if (myGamePiece.hitWith(item[i]))
+        {
+            // Add to the score when the item block is hit
+            score = score + 10;
+            myScore.update();
+        }
     }
 
     for (i = 0; i < myObstacles.length; i += 1) 
@@ -321,7 +353,7 @@ function updateGameArea()
         myObstacles[i].update();
     }
 
-    myScore.text="SCORE: " + myGameArea.frameNo;
+    myScore.text="SCORE: " + score;
     myScore.update();
     myGameTitle.text="Snowy Sweep";
     myGameTitle.update();
@@ -343,6 +375,17 @@ function accelerate(n)
 {
     myGamePiece.gravity = n;
 }
+
+function story()
+{
+    alert("Story is...");
+}
+
+function length()
+{
+    scoreEnd = prompt("How long would you like to play?", scoreEnd);
+    document.getElementById("msg").innerHTML = "You have entered to stop at " + scoreEnd + " points.";
+}
 </script>
 
 <div id="borderDIV">
@@ -356,11 +399,19 @@ function accelerate(n)
 
 <br>
 
+<p id="msg"></p>
+
+<br>
+
+<button class="start" onclick="play()">Start</button>
+<br>
 <button class="restart" onclick="restart()">Restart</button>
 <br>
-<button class="pause" onclick="pause()">Pause</button>
+<button class="pause" onclick="pause()">Stop</button>
 <br>
-<button class="login" onclick="login()">Log-In</button>
+<button class="story" onclick="story()">Story</button>
+<br>
+<button class="length" onclick="length()">Length</button>
 
 </body>
 

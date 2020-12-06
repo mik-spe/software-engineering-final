@@ -11,14 +11,3 @@ http.createServer(function (req, res)
   });
 }).listen(8080);
 
-function x()
-{
-  var x = Math.floor((Math.random() * 300) + 1);
-  return x;
-}
-
-function y()
-{
-  var y = Math.floor((Math.random() * 300) + 1);
-  return y;
-}
