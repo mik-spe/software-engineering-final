@@ -226,7 +226,7 @@ function component(width, height, color, x, y, type)
         }
         else
         {
-            alert("You hit a block. " + myScore.text + ". Select 'Close' to restart.");
+            alert("You hit a snow pillar. " + myScore.text + ". Select 'Close' to restart.");
             document.location.reload();
             return crash;
         }
@@ -285,7 +285,7 @@ function updateGameArea()
         if (score == scoreEnd)
         {
             myGameArea.stop();
-            alert("Congrats! You have reached your end at " + scoreEnd + " points.");
+            alert("Congrats! You have reached your goal at " + scoreEnd + " points.");
             document.location.reload();
         }
     }
@@ -330,7 +330,7 @@ function updateGameArea()
         xr = Math.floor((Math.random() * 300) + 1);
         yr = Math.floor((Math.random() * 300) + 1);
         myObstacles.push(new component(20, x - height, "white", x, height));
-        item.push(new component(10, 10, "grey", xr+300, yr));
+        item.push(new component(10, 10, "orange", xr+300, yr));
     }
 
     for (i = 0; i < item.length; i += 1)
