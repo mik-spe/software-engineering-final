@@ -1,7 +1,7 @@
 body
 {
 	background-color:powderblue;
-	background-image: url('pageBackground.jpg');
+	background-image: url('snowyBackground.jpg');
 	font-family: Arial, Helvetica, sans-serif;;
 }
 
@@ -23,6 +23,7 @@ h1
 	text-align:center;
 	color:black;
 	background-color:#feebfe;
+	outline: auto;
 }
 
 h2
@@ -31,6 +32,15 @@ h2
 	font-family: Arial, Helvetica, sans-serif;;
 	text-align:center;
 	color:black;
+}
+
+p
+{
+	font-weight: 100;
+	font-size: larger;
+	color: black;
+	outline-style: auto;
+	background-color: #feebfe;
 }
 
 button1
