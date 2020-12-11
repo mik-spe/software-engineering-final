@@ -29,6 +29,7 @@ function play()
     myGameArea.start();
 }
 
+// Set up the game area
 var myGameArea = 
 {
 canvas : document.createElement("canvas"),
@@ -53,14 +54,17 @@ start : function()
 },
 clear : function() 
 {
+    // Clear canvas
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 },
 stop : function() 
 {
+    // Stop canvas
     clearInterval(this.interval);
 }
 }
 
+// Adding a new image or text
 function component(width, height, color, x, y, type) 
 {
 this.type = type;
@@ -119,6 +123,7 @@ this.hitBottom = function()
     }
 }
 
+// If player hits the item
 this.hitWith = function(otherobj)
 {
     var myleft = this.x;
@@ -147,6 +152,7 @@ this.hitWith = function(otherobj)
     }
 }
 
+// If the player crashes into an obstacle
 this.crashWith = function(otherobj) 
 {
     var myleft = this.x;
@@ -174,21 +180,16 @@ this.crashWith = function(otherobj)
 
 function getRandomInt(max) 
 {
-return Math.floor(Math.random() * Math.floor(max));
+    return Math.floor(Math.random() * Math.floor(max));
 }
 
-var sampleMessages = ["First message", "Second message", "Third"];
-for (i = 0; i < myGameArea.frameNo; i++)
-{
-everyinterval(1000)
-console.log(sampleMessages.shift());
-}
-
+// Restart the game
 function restart()
 {
-document.location.href="";
+    document.location.href="";
 }
 
+// Stop the game
 function pause()
 {
 if (!gamePaused)
@@ -203,13 +204,13 @@ else if (gamePaused)
 }
 }
 
+// Updating canvas
 function updateGameArea() 
 {
 myGamePiece.speedX = 0;
 myGamePiece.speedY = 0; 
 myGamePiece.image.src = "avatar_down.png";
 myBackground.image.src = "winterBackground.png";
-//item.image.src = "snowflake.png";
 
 if (myGameArea.key && myGameArea.key == 37) 
 {
@@ -221,6 +222,7 @@ if (myGameArea.key && myGameArea.key == 39)
     myGamePiece.image.src = "avatar_right.png";
     myGamePiece.speedX = 3; 
     score++;
+    // If player reaches preset score
     if (score == scoreEnd)
     {
         myGameArea.stop();
@@ -259,6 +261,7 @@ myBackground.update();
 
 myGameArea.frameNo += 1;
 
+// Creating new obstacles and items to spawn randomly
 if (myGameArea.frameNo == 1 || everyinterval(150)) 
 {
     x = myGameArea.canvas.width;
@@ -312,16 +315,18 @@ return false;
 
 function accelerate(n) 
 {
-myGamePiece.gravity = n;
+    myGamePiece.gravity = n;
 }
 
+// The story message that will appear on "Story" button
 function story()
 {
-alert("You are wandering a frozen tundra, trying to find your way back. With nowhere else to go, you must take the dangerous path with many obstacles in your way. Dodge snow pillars and collect balls of warmth as you travel back home.");
+    alert("You are wandering a frozen tundra, trying to find your way back. With nowhere else to go, you must take the dangerous path with many obstacles in your way. Dodge snow pillars and collect balls of warmth as you travel back home.");
 }
 
+// Option to preset the cutoff of how long to play on "Length" button
 function length()
 {
-scoreEnd = prompt("How long would you like to play?", scoreEnd);
-document.getElementById("msg").innerHTML = "You have entered to stop at " + scoreEnd + " points.";
+    scoreEnd = prompt("How long would you like to play?", scoreEnd);
+    document.getElementById("msg").innerHTML = "You have entered to stop at " + scoreEnd + " points.";
 }
